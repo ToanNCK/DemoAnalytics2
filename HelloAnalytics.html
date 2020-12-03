@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="bootstrap.min.css">
     <!-- Include the CSS that styles the charts. -->
     <link rel="stylesheet" href="chartjs-visualizations.css">
+    <link rel="stylesheet" href="fontawesome-free-5.15.1-web/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -25,7 +27,122 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mt-15">
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-primary p-10"><i class="fas fa-users fa-5x text-white"></i>
+                    </div>
+                    <div class="pl-10">
+                        <p>Người dùng đang hoạt động</p>
+                        <p class="data" id="is-user">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-success p-10"><i class="fas fa-user fa-5x text-white"></i>
+                    </div>
+                    <div class="pl-10">
+                        <p>Người dùng mới</p>
+                        <p class="data" id="is-user-new">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-danger p-10"><i class="fas fa-wind fa-5x text-white"></i>
+                    </div>
+                    <div class="pl-10">
+                        <p>Số phiên</p>
+                        <p class="data" id="is-phien">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-warning p-10"><i
+                            class="fas fa-icicles fa-5x text-white"></i></div>
+                    <div class="pl-10">
+                        <p>Số phiên trên mỗi người dùng</p>
+                        <p class="data" id="is-phien-moi-user">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-15">
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-info p-10"><i
+                            class="fas fa-chart-bar fa-5x text-white"></i></div>
+                    <div class="pl-10">
+                        <p>Số lần xem trang</p>
+                        <p class="data" id="is-view-page">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-secondary p-10"><i
+                            class="fas fa-chart-bar fa-5x text-white"></i></div>
+                    <div class="pl-10">
+                        <p>Số trang / phiên</p>
+                        <p class="data" id="is-view-phien">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center .bg-light p-10"><i class="fas fa-chart-bar fa-5x"></i></div>
+                    <div class="pl-10">
+                        <p>Thời gian trung bình của phiên</p>
+                        <p class="data" id="is-avg-phien">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="d-flex h-90">
+                    <div class="d-flex align-items-center bg-dark p-10"><i
+                            class="fas fa-chart-bar fa-5x text-white"></i></div>
+                    <div class="pl-10">
+                        <p>Tỷ lệ thoát</p>
+                        <p class="data" id="is-exit">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-25 mb-25">
+            <div class="col-md-5">
+                <p>Trang hoạt động hàng đầu:</p>
+                <table id="tbl-page" class="table table-dark">
+                    <thead>
+                      <tr>
+                        <th scope="col">Tiêu đề</th>
+                        <th scope="col">Path</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr id="clone" class="hidden">
+                        <th class="title"></th>
+                        <td class="path"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+            <div class="col-md-7">
+                <p>Vị trí hàng đầu:</p>
+                <div id="world-map" style="height: 300px;"></div>
+            </div>
+        </div>
+
+        <div class="row mt-15">
             <div class="col-md-6">
                 <div class="Chartjs">
                     <h3>This Week vs Last Week (by sessions)</h3>
@@ -42,7 +159,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mt-15">
             <div class="col-md-6">
                 <div class="Chartjs">
                     <h3>Top Browsers (by pageview)</h3>
@@ -59,7 +176,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mt-15">
             <div class="col-md-6">
                 <div class="Chartjs">
                     <h3>Top Pages (by pageview)</h3>
@@ -96,6 +213,8 @@
     <script src="date-range-selector.js"></script>
     <!-- Include the ActiveUsers component script. -->
     <script src="active-users.js"></script>
+    <script src="jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="jvectormap/jquery-jvectormap-world-mill-en.js"></script>
     <!-- set up http://localhost:58893/ -->
     <script src="script.js"></script>
 </body>

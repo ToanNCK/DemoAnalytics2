@@ -1,3 +1,26 @@
+var now = moment();
+var thisWeek = '2020-11-26';
+var lastWeek = '2020-12-02';
+var _user = $('#is-user');
+var _userNew = $('#is-user-new');
+var _phien = $('#is-phien');
+var _phienUser = $('#is-phien-moi-user');
+var _pageView = $('#is-view-page');
+var _pageViewPhien = $('#is-view-phien');
+var _avgPhien = $('#is-avg-phien');
+var _exit = $('#is-exit');
+
+const dataConst = {
+	clientid: '493450092586-k3jia3f47oc7hbhrbemdt3vbvqv9la8m.apps.googleusercontent.com',
+	pollingInterval: 10,
+	ids: 'ga:229773876',
+	start_date: '365daysAgo',
+	end_date: 'yesterday',
+	max_results: 5,
+	start_date_week: thisWeek,
+	end_date_week: lastWeek
+}
+
 // == NOTE ==
 // This code uses ES6 promises. If you want to use this code in a browser
 // that doesn't supporting promises natively, you'll have to include a polyfill.
@@ -11,7 +34,7 @@ gapi.analytics.ready(function () {
 	 */
 	gapi.analytics.auth.authorize({
 		container: 'embed-api-auth-container',
-		clientid: '493450092586-k3jia3f47oc7hbhrbemdt3vbvqv9la8m.apps.googleusercontent.com'
+		clientid: dataConst.clientid
 	});
 
 	/**
@@ -21,7 +44,7 @@ gapi.analytics.ready(function () {
 	 */
 	var activeUsers = new gapi.analytics.ext.ActiveUsers({
 		container: 'active-users-container',
-		pollingInterval: 5
+		pollingInterval: dataConst.pollingInterval
 	});
 
 
@@ -31,17 +54,18 @@ gapi.analytics.ready(function () {
 	activeUsers.once('success', function () {
 		var element = this.container.firstChild;
 		var timeout;
-		executeRealTime();
 		this.on('change', function (data) {
 			var element = this.container.firstChild;
 			var animationClass = data.delta > 0 ? 'is-increasing' : 'is-decreasing';
 			element.className += (' ' + animationClass);
-
+			_user.text(data.activeUsers);
 			clearTimeout(timeout);
 			timeout = setTimeout(function () {
 				element.className =
 					element.className.replace(/ is-(increasing|decreasing)/g, '');
 			}, 3000);
+			executeRealTimeGeo();
+			executeRealTimePage();
 		});
 	});
 
@@ -52,7 +76,7 @@ gapi.analytics.ready(function () {
 	 */
 	var viewSelector = new gapi.analytics.ext.ViewSelector2({
 		container: 'view-selector-container',
-		ids: 'ga:229773876'
+		ids: dataConst.ids
 	})
 		.execute();
 
@@ -65,10 +89,10 @@ gapi.analytics.ready(function () {
 		query: {
 			'dimensions': 'ga:pagePath',
 			'metrics': 'ga:users',
-			'start-date': '365daysAgo',
-			'end-date': 'yesterday',
 			'sort': '-ga:users',
-			'max-results': 5
+			'start-date': dataConst.start_date,
+			'end-date': dataConst.end_date,
+			'max-results': dataConst.max_results
 		},
 		chart: {
 			type: 'TABLE',
@@ -96,6 +120,7 @@ gapi.analytics.ready(function () {
 		renderTopBrowsersChart(data.ids);
 		renderTopCountriesChart(data.ids);
 		renderTopPagesChart(data.ids);
+		getData(data.ids);
 	});
 
 	viewSelector.on('change', function (ids) {
@@ -248,10 +273,10 @@ gapi.analytics.ready(function () {
 			'ids': ids,
 			'dimensions': 'ga:browser',
 			'metrics': 'ga:pageviews',
-			'start-date': '365daysAgo',
-			'end-date': 'yesterday',
 			'sort': '-ga:pageviews',
-			'max-results': 5
+			'start-date': dataConst.start_date,
+			'end-date': dataConst.end_date,
+			'max-results': dataConst.max_results
 		})
 			.then(function (response) {
 
@@ -278,10 +303,10 @@ gapi.analytics.ready(function () {
 			'ids': ids,
 			'dimensions': 'ga:country',
 			'metrics': 'ga:sessions',
-			'start-date': '365daysAgo',
-			'end-date': 'yesterday',
 			'sort': '-ga:sessions',
-			'max-results': 5
+			'start-date': dataConst.start_date,
+			'end-date': dataConst.end_date,
+			'max-results': dataConst.max_results
 		})
 			.then(function (response) {
 				var data = [];
@@ -306,10 +331,10 @@ gapi.analytics.ready(function () {
 			'ids': ids,
 			'dimensions': 'ga:pagePath',
 			'metrics': 'ga:users',
-			'start-date': '365daysAgo',
-			'end-date': 'yesterday',
 			'sort': '-ga:users',
-			'max-results': 5
+			'start-date': dataConst.start_date,
+			'end-date': dataConst.end_date,
+			'max-results': dataConst.max_results
 		})
 			.then(function (response) {
 
@@ -401,16 +426,89 @@ gapi.analytics.ready(function () {
 		return div.innerHTML;
 	}
 
-	function executeRealTime() {
-		return gapi.client.analytics.data.realtime.get({
-		  "ids": "ga:229773876",
-		  "metrics": "rt:activeUsers",
-		  "dimensions": "rt:medium,rt:city"
+	function getData(ids) {
+		query({
+			'ids': ids,
+			'metrics': 'ga:newUsers,ga:sessions,ga:bounceRate,ga:pageviews,ga:pageviewsPerSession,ga:avgTimeOnPage',
+			'start-date': dataConst.start_date_week,
+			'end-date': dataConst.end_date_week,
+			'max-results': dataConst.max_results
 		})
-			.then(function(response) {
-					// Handle the results here (response.result has the parsed body).
-					console.log("Response", response);
-				  },
-				  function(err) { console.error("Execute error", err); });
-	  }
+			.then(function (response) {
+				let data = response.rows[0];
+				_userNew.text(data[0]);
+				_phien.text(data[1]);
+				_phienUser.text((parseFloat(data[1]) / parseFloat(data[0])).toFixed(2));
+				_pageView.text(data[3]);
+				_pageViewPhien.text(parseFloat(data[4]).toFixed(2));
+				_avgPhien.text((parseFloat(data[5]) / 1000).toFixed(2));
+				_exit.text(parseFloat(data[2]).toFixed(2) + ' giây');
+			},
+				function (err) { console.error("Execute error", err); });
+	}
+
+	function executeRealTimeGeo() {
+		return gapi.client.analytics.data.realtime.get({
+			"ids": dataConst.ids,
+			"metrics": "rt:activeUsers",
+			"dimensions": "rt:country,rt:region,rt:city,rt:latitude,rt:longitude"
+		})
+			.then(function (response) {
+				var mapData = null;
+				$.each(response.result.rows, function (i, el) {
+					if (el[i] === 'Vietnam') {
+						mapData = {
+							'VN': 0
+						}
+					}
+				});
+
+				$('#world-map').vectorMap({
+					map: 'world_mill_en',
+					backgroundColor: "transparent",
+					regionStyle: {
+						initial: {
+							fill: '#e4e4e4',
+							"fill-opacity": 0.9,
+							stroke: 'none',
+							"stroke-width": 0,
+							"stroke-opacity": 0
+						}
+					},
+					series: {
+						regions: [{
+							values: mapData,
+							scale: ["#1ab394", "#22d6b1"],
+							normalizeFunction: 'polynomial'
+						}]
+					},
+				});
+
+			},
+				function (err) { console.error("Execute error", err); });
+	}
+
+
+	function executeRealTimePage() {
+		return gapi.client.analytics.data.realtime.get({
+			"ids": dataConst.ids,
+			"metrics": "rt:pageviews",
+			"dimensions": "rt:pageTitle,rt:pagePath",
+			'max-results': dataConst.max_results
+		})
+			.then(function (response) {
+				console.log("Response", response);
+				var tbody = $('#tbl-page').find('tbody');
+				var cloneTr = tbody.find('#clone').clone().removeClass('hidden');
+				$.each(response.result.rows, function (i, el) {
+					debugger
+					cloneTr.find('.title').text(el[0]);
+					cloneTr.find('.path').text(el[1]);
+					tbody.append(cloneTr);
+				});
+
+			},
+				function (err) { console.error("Execute error", err); });
+	}
+	
 });
