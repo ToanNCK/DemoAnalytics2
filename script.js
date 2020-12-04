@@ -462,7 +462,7 @@ gapi.analytics.ready(function () {
 						}
 					}
 				});
-				
+
 				$('#world-map').empty();
 				$('#world-map').vectorMap({
 					map: 'world_mill_en',
@@ -500,6 +500,7 @@ gapi.analytics.ready(function () {
 			.then(function (response) {
 				console.log("Response", response);
 				var tbody = $('#tbl-page').find('tbody');
+				tbody.empty();
 				var cloneTr = tbody.find('#clone').clone().removeClass('hidden');
 				$.each(response.result.rows, function (i, el) {
 					debugger
