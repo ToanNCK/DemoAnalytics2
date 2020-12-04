@@ -1,6 +1,6 @@
 var now = moment();
-var thisWeek = '2020-11-26';
-var lastWeek = '2020-12-02';
+var thisWeek = moment(now).subtract(6, 'days').format('YYYY-MM-DD');
+var lastWeek = moment(now).subtract(1, 'days').format('YYYY-MM-DD');
 var _user = $('#is-user');
 var _userNew = $('#is-user-new');
 var _phien = $('#is-phien');
