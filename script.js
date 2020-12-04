@@ -63,9 +63,10 @@ gapi.analytics.ready(function () {
 			timeout = setTimeout(function () {
 				element.className =
 					element.className.replace(/ is-(increasing|decreasing)/g, '');
+				executeRealTimeGeo();
+				executeRealTimePage();
 			}, 3000);
-			executeRealTimeGeo();
-			executeRealTimePage();
+
 		});
 	});
 
@@ -500,10 +501,8 @@ gapi.analytics.ready(function () {
 			.then(function (response) {
 				console.log("Response", response);
 				var tbody = $('#tbl-page').find('tbody');
-				tbody.empty();
-				var cloneTr = tbody.find('#clone').clone().removeClass('hidden');
 				$.each(response.result.rows, function (i, el) {
-					debugger
+					var cloneTr = tbody.find('#clone').clone().removeClass('hidden');
 					cloneTr.find('.title').text(el[0]);
 					cloneTr.find('.path').text(el[1]);
 					tbody.append(cloneTr);
@@ -512,5 +511,5 @@ gapi.analytics.ready(function () {
 			},
 				function (err) { console.error("Execute error", err); });
 	}
-	
+
 });
