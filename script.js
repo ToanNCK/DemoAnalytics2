@@ -462,7 +462,8 @@ gapi.analytics.ready(function () {
 						}
 					}
 				});
-
+				
+				$('#world-map').empty();
 				$('#world-map').vectorMap({
 					map: 'world_mill_en',
 					backgroundColor: "transparent",
