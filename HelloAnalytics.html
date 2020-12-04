@@ -16,7 +16,7 @@
     <h2 class="text-center">AuthorizationAnalytics</h2>
 
     <div class="container">
-        <div class="row hidden">
+        <div class="row">
             <div class="col-lg-10">
                 <div id="embed-api-auth-container"></div>
                 <div id="view-selector-container"></div>
@@ -63,8 +63,7 @@
 
             <div class="col-md-3">
                 <div class="d-flex h-90">
-                    <div class="d-flex align-items-center bg-warning p-10"><i
-                            class="fas fa-icicles fa-5x text-white"></i></div>
+                    <div class="d-flex align-items-center bg-warning p-10"><i class="fas fa-icicles fa-5x text-white"></i></div>
                     <div class="pl-10">
                         <p>Số phiên trên mỗi người dùng</p>
                         <p class="data" id="is-phien-moi-user">0</p>
@@ -74,21 +73,9 @@
         </div>
 
         <div class="row mt-15">
-            <div class="col-md-3 hidden">
-                <div class="d-flex h-90">
-                    <div class="d-flex align-items-center bg-info p-10"><i
-                            class="fas fa-chart-bar fa-5x text-white"></i></div>
-                    <div class="pl-10">
-                        <p>Số lần xem trang</p>
-                        <p class="data" id="is-view-page">0</p>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-3">
                 <div class="d-flex h-90">
-                    <div class="d-flex align-items-center bg-secondary p-10"><i
-                            class="fas fa-chart-bar fa-5x text-white"></i></div>
+                    <div class="d-flex align-items-center bg-secondary p-10"><i class="fas fa-chart-bar fa-5x text-white"></i></div>
                     <div class="pl-10">
                         <p>Số trang / phiên</p>
                         <p class="data" id="is-view-phien">0</p>
@@ -96,20 +83,9 @@
                 </div>
             </div>
 
-            <div class="col-md-3 hidden">
-                <div class="d-flex h-90">
-                    <div class="d-flex align-items-center .bg-light p-10"><i class="fas fa-chart-bar fa-5x"></i></div>
-                    <div class="pl-10">
-                        <p>Thời gian trung bình của phiên</p>
-                        <p class="data" id="is-avg-phien">0</p>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-3">
                 <div class="d-flex h-90">
-                    <div class="d-flex align-items-center bg-dark p-10"><i
-                            class="fas fa-chart-bar fa-5x text-white"></i></div>
+                    <div class="d-flex align-items-center bg-dark p-10"><i class="fas fa-chart-bar fa-5x text-white"></i></div>
                     <div class="pl-10">
                         <p>Tỷ lệ thoát</p>
                         <p class="data" id="is-exit">0</p>
@@ -118,75 +94,48 @@
             </div>
         </div>
 
-        <div class="row mt-25 mb-25">
-            <div class="col-md-5">
-                <p>Trang hoạt động hàng đầu:</p>
-                <table id="tbl-page" class="table table-dark">
-                    <thead>
-                      <tr>
-                        <th scope="col">Tiêu đề</th>
-                        <th scope="col">Path</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr id="clone" class="hidden">
-                        <th class="title"></th>
-                        <td class="path"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>
-            <div class="col-md-7">
-                <p>Vị trí hàng đầu:</p>
-                <div id="world-map" style="height: 300px;"></div>
-            </div>
-        </div>
-
-        <div class="row mt-15 hidden">
-            <div class="col-md-6">
-                <div class="Chartjs">
-                    <h3>This Week vs Last Week (by sessions)</h3>
-                    <figure class="Chartjs-figure" id="chart-1-container"></figure>
-                    <ol class="Chartjs-legend" id="legend-1-container"></ol>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="Chartjs">
-                    <h3>This Year vs Last Year (by users)</h3>
-                    <figure class="Chartjs-figure" id="chart-2-container"></figure>
-                    <ol class="Chartjs-legend" id="legend-2-container"></ol>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-15 hidden">
-            <div class="col-md-6">
-                <div class="Chartjs">
-                    <h3>Top Browsers (by pageview)</h3>
-                    <figure class="Chartjs-figure" id="chart-3-container"></figure>
-                    <ol class="Chartjs-legend" id="legend-3-container"></ol>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="Chartjs">
-                    <h3>Top Countries (by sessions)</h3>
-                    <figure class="Chartjs-figure" id="chart-4-container"></figure>
-                    <ol class="Chartjs-legend" id="legend-4-container"></ol>
+        <div class="row mt-15">
+            <div class="col-md-12">
+                <div class="is-info">
+                    <h3>Vị trí hàng đầu: </h3>
+                    <div id="regions_div" style="height: 300px;"></div>
                 </div>
             </div>
         </div>
 
         <div class="row mt-15">
-            <div class="col-md-6 hidden">
-                <div class="Chartjs">
-                    <h3>Top Pages (by pageview)</h3>
-                    <figure class="Chartjs-figure" id="chart-5-container"></figure>
-                    <ol class="Chartjs-legend" id="legend-5-container"></ol>
+            <div class="col-md-6">
+                <div class="is-info">
+                    <h3>Trang hoạt động hàng đầu: </h3>
+                    <div class="gapi-analytics-data-chart">
+                        <div class="google-visualization-table" style="position: relative; z-index: 0; max-width: 100%; max-height: 100%; width: 100%; height: auto;">
+                            <div style="position: relative; overflow: auto; max-width: 100%; max-height: 100%; width: 100%; height: auto;">
+                                <table id="tbl-page" class="google-visualization-table-table" style="width: 100%; height: auto;">
+                                    <thead>
+                                        <tr class="gapi-analytics-data-chart-styles-table-tr-head">
+                                            <th scope="col" class="gapi-analytics-data-chart-styles-table-th unsorted">Tiêu đề
+                                            </th>
+                                            <th scope="col" class="gapi-analytics-data-chart-styles-table-th unsorted">Path
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="clone" class="hidden">
+                                            <th class="title gapi-analytics-data-chart-styles-table-td"></th>
+                                            <td class="path gapi-analytics-data-chart-styles-table-td"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <h3>Top Pages (by pageview, type table)</h3>
-                <div id="main-chart-container"></div>
+                <div class="is-info">
+                    <h3>Trang hoạt động hàng đầu trong tuần: </h3>
+                    <div id="main-chart-container"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -196,16 +145,26 @@
     <script src="bootstrap.min.js"></script>
 
     <script>
-        (function (w, d, s, g, js, fs) {
-            g = w.gapi || (w.gapi = {}); g.analytics = { q: [], ready: function (f) { this.q.push(f); } };
-            js = d.createElement(s); fs = d.getElementsByTagName(s)[0];
+        (function(w, d, s, g, js, fs) {
+            g = w.gapi || (w.gapi = {});
+            g.analytics = {
+                q: [],
+                ready: function(f) {
+                    this.q.push(f);
+                }
+            };
+            js = d.createElement(s);
+            fs = d.getElementsByTagName(s)[0];
             js.src = 'https://apis.google.com/js/platform.js';
-            fs.parentNode.insertBefore(js, fs); js.onload = function () { g.load('analytics'); };
+            fs.parentNode.insertBefore(js, fs);
+            js.onload = function() {
+                g.load('analytics');
+            };
         }(window, document, 'script'));
     </script>
     <!-- This demo uses the Chart.js graphing library and Moment.js to do date
      formatting and manipulation. -->
-    <script src="Chart.min.js"></script>
+    <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
     <script src="moment.min.js"></script>
     <!-- Include the ViewSelector2 component script. -->
     <script src="view-selector2.js"></script>
@@ -213,8 +172,6 @@
     <script src="date-range-selector.js"></script>
     <!-- Include the ActiveUsers component script. -->
     <script src="active-users.js"></script>
-    <script src="jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="jvectormap/jquery-jvectormap-world-mill-en.js"></script>
     <!-- set up http://localhost:58893/ -->
     <script src="script.js"></script>
 </body>
