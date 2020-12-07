@@ -23,7 +23,7 @@ const dataConst = {
 // This code uses ES6 promises. If you want to use this code in a browser
 // that doesn't supporting promises natively, you'll have to include a polyfill.
 
-gapi.analytics.ready(function() {
+gapi.analytics.ready(function () {
 
     google.charts.load('current', {
         'packages': ['geochart'],
@@ -40,7 +40,9 @@ gapi.analytics.ready(function() {
 
         var options = {
             displayMode: 'markers',
-            colorAxis: { colors: ['orange'] }
+            colorAxis: { colors: ['#e7711c'] },
+            backgroundColor: {fill : '#eaf7fe'},
+            magnifyingGlass:{enable: true, zoomFactor: 7.5}
         };
         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
         chart.draw(data, options);
@@ -70,16 +72,16 @@ gapi.analytics.ready(function() {
     /**
      * Add CSS animation to visually show the when users come and go.
      */
-    activeUsers.once('success', function() {
+    activeUsers.once('success', function () {
         var element = this.container.firstChild;
         var timeout;
-        this.on('change', function(data) {
+        this.on('change', function (data) {
             var element = this.container.firstChild;
             var animationClass = data.delta > 0 ? 'is-increasing' : 'is-decreasing';
             element.className += (' ' + animationClass);
             _user.text(data.activeUsers);
             clearTimeout(timeout);
-            timeout = setTimeout(function() {
+            timeout = setTimeout(function () {
                 element.className =
                     element.className.replace(/ is-(increasing|decreasing)/g, '');
                 executeRealTimeGeo();
@@ -95,9 +97,9 @@ gapi.analytics.ready(function() {
      * element with the id "view-selector-container".
      */
     var viewSelector = new gapi.analytics.ext.ViewSelector2({
-            container: 'view-selector-container',
-            ids: dataConst.ids
-        })
+        container: 'view-selector-container',
+        ids: dataConst.ids
+    })
         .execute();
 
     /**
@@ -128,7 +130,7 @@ gapi.analytics.ready(function() {
      * Update the activeUsers component, the Chartjs charts, and the dashboard
      * title whenever the user changes the view.
      */
-    viewSelector.on('viewChange', function(data) {
+    viewSelector.on('viewChange', function (data) {
         var title = document.getElementById('view-name');
         title.textContent = data.property.name + ' (' + data.view.name + ')';
         // Start tracking active users for this view.
@@ -137,7 +139,7 @@ gapi.analytics.ready(function() {
         getData(data.ids);
     });
 
-    viewSelector.on('change', function(ids) {
+    viewSelector.on('change', function (ids) {
         var options = { query: { ids: ids } };
         mainChart.set(options).execute();
     });
@@ -149,86 +151,97 @@ gapi.analytics.ready(function() {
      * @@return {Promise} A promise.
      */
     function query(params) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             var data = new gapi.analytics.report.Data({ query: params });
-            data.once('success', function(response) { resolve(response); })
-                .once('error', function(response) { reject(response); })
+            data.once('success', function (response) { resolve(response); })
+                .once('error', function (response) { reject(response); })
                 .execute();
         });
     }
 
     function getData(ids) {
         query({
-                'ids': ids,
-                'metrics': 'ga:newUsers,ga:sessions,ga:bounceRate,ga:pageviews,ga:pageviewsPerSession,ga:avgTimeOnPage',
-                'start-date': dataConst.start_date_week,
-                'end-date': dataConst.end_date_week,
-                'max-results': dataConst.max_results
-            })
-            .then(function(response) {
-                    let data = response.rows[0];
-                    _userNew.text(data[0]);
-                    _phien.text(data[1]);
-                    _phienUser.text((parseFloat(data[1]) / parseFloat(data[0])).toFixed(2));
-                    _pageViewPhien.text(parseFloat(data[4]).toFixed(2));
-                    _exit.text(parseFloat(data[2]).toFixed(2) + ' giây');
-                },
-                function(err) { console.error("Execute error", err); });
+            'ids': ids,
+            'metrics': 'ga:newUsers,ga:sessions,ga:bounceRate,ga:pageviews,ga:pageviewsPerSession,ga:avgTimeOnPage',
+            'start-date': dataConst.start_date_week,
+            'end-date': dataConst.end_date_week,
+            'max-results': dataConst.max_results
+        })
+            .then(function (response) {
+                let data = response.rows[0];
+                _userNew.text(data[0]);
+                _phien.text(data[1]);
+                _phienUser.text((parseFloat(data[1]) / parseFloat(data[0])).toFixed(2));
+                _pageViewPhien.text(parseFloat(data[4]).toFixed(2));
+                _exit.text(parseFloat(data[2]).toFixed(2) + ' giây');
+            },
+                function (err) { console.error("Execute error", err); });
     }
 
     function executeRealTimeGeo() {
         return gapi.client.analytics.data.realtime.get({
-                "ids": dataConst.ids,
-                "metrics": "rt:activeUsers",
-                "dimensions": "rt:country,rt:region,rt:city,rt:latitude,rt:longitude"
-            })
-            .then(function(response) {
+            "ids": dataConst.ids,
+            "metrics": "rt:activeUsers",
+            "dimensions": "rt:country,rt:region,rt:city,rt:latitude,rt:longitude"
+        })
+            .then(function (response) {
 
-                    var dataSet = [
-                        ['Nước', 'Thành phố', 'Số người dùng']
-                    ];
-
-                    $.each(response.result.rows, function(i, el) {
+                var dataSet = [
+                    ['Nước', 'Thành phố', 'Số người dùng']
+                ];
+                
+                if(response.result.rows){
+                    if (response.result.rows.length == 0) {
+                        dataSet.push(['', '', 0]);
+                    }
+    
+                    $.each(response.result.rows, function (i, el) {
                         dataSet.push([el[0], el[2], parseInt(el[5])]);
                     });
+                }else{
+                    dataSet.push(['', '', 0]);
+                }
 
-                    var data = google.visualization.arrayToDataTable(dataSet);
-                    var options = {
-                        displayMode: 'markers',
-                        colorAxis: { colors: ['orange'] }
-                    };
+                var data = google.visualization.arrayToDataTable(dataSet);
+                var options = {
+                    displayMode: 'markers',
+                    colorAxis: { colors: ['#e7711c'] },
+                    backgroundColor: {fill : '#eaf7fe'},
+                    magnifyingGlass:{enable: true, zoomFactor: 7.5}
+                };
 
-                    var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-                    chart.draw(data, options);
-                },
-                function(err) {
+                var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+                chart.draw(data, options);
+            },
+                function (err) {
                     console.error("Execute error", err);
                 });
     }
 
     function executeRealTimePage() {
         return gapi.client.analytics.data.realtime.get({
-                "ids": dataConst.ids,
-                "metrics": "rt:pageviews",
-                "dimensions": "rt:pageTitle,rt:pagePath",
-                'max-results': dataConst.max_results
-            })
-            .then(function(response) {
-                    var tbody = $('#tbl-page').find('tbody');
-                    $.each(response.result.rows, function(i, el) {
-                        var cloneTr = tbody.find('#clone').clone().removeClass('hidden');
-                        if (i % 2 === 0) {
-                            cloneTr.addClass('gapi-analytics-data-chart-styles-table-tr-even').find('.title').text(el[0]);
-                            cloneTr.addClass('gapi-analytics-data-chart-styles-table-tr-even').find('.path').text(el[1]);
-                        } else {
-                            cloneTr.addClass('gapi-analytics-data-chart-styles-table-tr-odd').find('.title').text(el[0]);
-                            cloneTr.addClass('gapi-analytics-data-chart-styles-table-tr-odd').find('.path').text(el[1]);
-                        }
+            "ids": dataConst.ids,
+            "metrics": "rt:pageviews",
+            "dimensions": "rt:pageTitle,rt:pagePath",
+            'max-results': dataConst.max_results
+        })
+            .then(function (response) {
+                var tbody = $('#tbl-page').find('tbody');
+                tbody.find('.clone-t').remove();
+                $.each(response.result.rows, function (i, el) {
+                    var cloneTr = tbody.find('#clone').clone().removeClass('hidden');
+                    if (i % 2 === 0) {
+                        cloneTr.addClass('clone-t gapi-analytics-data-chart-styles-table-tr-even').find('.title').text(el[0]);
+                        cloneTr.addClass('clone-t gapi-analytics-data-chart-styles-table-tr-even').find('.path').text(el[1]);
+                    } else {
+                        cloneTr.addClass('clone-t gapi-analytics-data-chart-styles-table-tr-odd').find('.title').text(el[0]);
+                        cloneTr.addClass('clone-t gapi-analytics-data-chart-styles-table-tr-odd').find('.path').text(el[1]);
+                    }
 
-                        tbody.append(cloneTr);
-                    });
+                    tbody.append(cloneTr);
+                });
 
-                },
-                function(err) { console.error("Execute error", err); });
+            },
+                function (err) { console.error("Execute error", err); });
     }
 });
